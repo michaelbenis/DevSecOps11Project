@@ -1,20 +1,33 @@
 pipeline {
     agent any
+    parameters {
+        string(name: 'REPO_TO_CLONE', defaultValue: 'https://github.com/michaelbenis/DevSecOps11Project', description: 'Git repository URL')
+        string(name: 'BRANCH_TO_MERGE', defaultValue: 'master', description: 'Branch to merge')
+    }
     stages {
         stage("Clone repository") {
             steps {
-                git branch: env.BRANCH_TO_MERGE,
-                    url: env.REPO_TO_CLONE
+                git branch: "${params.BRANCH_TO_MERGE}", url: "${params.REPO_TO_CLONE}"
+            }
+        }
+        stage("Checkout branch") {
+            steps {
+                sh "git checkout ${params.BRANCH_TO_MERGE}"
+            }
+        }
+        stage("Run merge script") {
+            steps {
+                sh "python project.py"
             }
         }
         stage("Build image") {
             steps {
-                sh 'docker build --build-arg REPO_TO_CLONE=$REPO_TO_CLONE --build-arg BRANCH_TO_MERGE=$BRANCH_TO_MERGE -t merge-image .'
+                sh "docker build --build-arg REPO_TO_CLONE=${params.REPO_TO_CLONE} --build-arg BRANCH_TO_MERGE=${params.BRANCH_TO_MERGE} -t merge-image ."
             }
         }
         stage("Run container") {
             steps {
-                sh 'docker run merge-image'
+                sh "docker run -e REPO_TO_CLONE=${params.REPO_TO_CLONE} -e BRANCH_TO_MERGE=${params.BRANCH_TO_MERGE} merge-image"
             }
         }
     }
