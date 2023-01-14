@@ -5,17 +5,13 @@ pipeline {
     stages {
         stage("Clone repository") {
             steps {
-                git branch: 'main',
-                    url: 'https://github.com/michaelbenis/Cyber-incident.git'
+                git branch: env.BRANCH_TO_MERGE,
+                    url: env.REPO_TO_CLONE
             }
         }
         stage("Build image") {
             steps {
-                script {
-                    def repo = "https://github.com/michaelbenis/Cyber-incident.git"
-                    def branch = "main"
-                }
-                sh 'docker build --build-arg REPO_TO_CLONE=$repo --build-arg BRANCH_TO_MERGE=$branch -t merge-image .'
+                sh 'docker build --build-arg REPO_TO_CLONE=$REPO_TO_CLONE --build-arg BRANCH_TO_MERGE=$BRANCH_TO_MERGE -t merge-image .'
             }
         }
         stage("Run container") {
