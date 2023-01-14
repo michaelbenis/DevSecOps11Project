@@ -15,6 +15,13 @@ pipeline {
                 sh "git checkout ${params.BRANCH_TO_MERGE}"
             }
         }
+        stage("Install dependencies") {
+            steps {
+                sh 'python3 -m venv venv'
+                sh 'source venv/bin/activate'
+                sh 'pip install -r requirements.txt'
+            }
+        }
         stage("Run merge script") {
             steps {
                 sh "python3 project.py"
