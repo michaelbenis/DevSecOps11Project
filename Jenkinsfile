@@ -17,7 +17,7 @@ pipeline {
         }
         stage("Run merge script") {
             steps {
-                sh "python project.py"
+                sh "python3 project.py"
             }
         }
         stage("Build image") {
