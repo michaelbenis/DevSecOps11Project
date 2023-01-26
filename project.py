@@ -21,9 +21,6 @@ import re
 # Get git URL from environment variable
 url = os.environ.get('REPO_TO_CLONE')
 
-# Get git URL from environment variable
-url = os.environ.get('REPO_TO_CLONE')
-
 # Check if the URL is from GitHub
 if re.match(r"https://github.com/.*", url):
     # Check if the repository exists locally
